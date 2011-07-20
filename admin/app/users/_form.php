@@ -34,21 +34,21 @@
        <tr> 
          <td class='firstrow'><h5>Full Name</h5></td>
          <td class='edit_col firstrow'>
-           <input type="text" id="name" name="user[name]" value="<?=$user->name?>">
+           <input type="text" id="name" name="user[name]" value="<?php echo $user->name?>">
          </td>
        </tr>
        <tr>
          <td><h5>Email</h5></td>
          <td>
-           <input type="text" id="width" name="user[email]" value="<?=$user->email?>">
+           <input type="text" id="width" name="user[email]" value="<?php echo $user->email?>">
          </td>
        </tr>
        <tr>
          <td><h5>System Notifications</h5></td>
          <td>
-           <input type="checkbox" id="allow_email" value="allow" name="user[allow_email]"<? if($user->allow_email) echo " CHECKED"?>> Yes, I want to recieve e-mail notices about system activity that concerns me (recommended).
+           <input type="checkbox" id="allow_email" value="allow" name="user[allow_email]"<?php if($user->allow_email) echo " CHECKED"?>> Yes, I want to recieve e-mail notices about system activity that concerns me (recommended).
          </td>
-        <? if (!isLoggedIn()){ ?>
+        <?php if (!isLoggedIn()){ ?>
        <tr>
          <td><h5>Username</h5></td>
          <td>
@@ -67,11 +67,11 @@
            <input type="password" id="pass2" name="user[np2]" value="">
          </td>
        </tr>
-       <? } elseif (isLoggedIn() && $_SESSION['user']->username != $user->username) { ?>
+       <?php } elseif (isLoggedIn() && $_SESSION['user']->username != $user->username) { ?>
        <tr>
          <td><h5>Username</h5></td>
          <td>
-           <input type="text" id="username" name="user[username]" value="<?=$user->username?>">
+           <input type="text" id="username" name="user[username]" value="<?php echo $user->username?>">
          </td>
        </tr>
       <tr>
@@ -89,17 +89,17 @@
        <tr>
          <td><h5>Admin Privileges</h5></td>
          <td>
-           <input type="checkbox" id="admin_privileges" value="admin" name="user[admin_privileges]"<? if($user->admin_privileges) echo " CHECKED"?>>
+           <input type="checkbox" id="admin_privileges" value="admin" name="user[admin_privileges]"<?php if($user->admin_privileges) echo " CHECKED"?>>
          </td>
        </tr>
-       <? } else {?>
+       <?php } else {?>
        <tr>
          <td><h5>Username</h5></td>
          <td>
-           <?=$user->username ?>
+           <?php echo $user->username ?>
          </td>
        </tr>
-       <? } ?>
+       <?php } ?>
      </table>
      </div>
 	<br clear="all" />
