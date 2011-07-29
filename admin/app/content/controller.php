@@ -210,6 +210,8 @@ class contentController extends Controller
           if($dat['upload_type'] == 'dynamic') {
               $this->flash('Your content was successfully added. It will be automatically processed and will appear on the live feed shortly. '.$uploader->status);
           } else {
+              $content = new Content($uploader->cid);
+              $feeds = $content->list_feeds();
               if( !$feeds ){
                   $this->flash('Your content submission failed. '.
                                'You must submit to at least one feed.  Please try again. '.$uploader->status, 'error');
