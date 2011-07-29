@@ -1,7 +1,7 @@
 <div class="roundcont">
-  <div class="roundtop"><img src="<? echo ADMIN_BASE_URL ?>images/rc_tl.gif" alt="" width="6" height="6" class="corner topleft" style="display: none" /></div>
+  <div class="roundtop"><img src="<?php echo ADMIN_BASE_URL ?>images/rc_tl.gif" alt="" width="6" height="6" class="corner topleft" style="display: none" /></div>
   <div class="roundcont_main">
-    <form id="login" name="login" method="post" action="<?= ADMIN_URL ?>/frontpage/auth">
+    <form id="login" name="login" method="post" action="<?php echo ADMIN_URL ?>/frontpage/auth">
       <p>
         <label>Username
           <input name="user[username]" type="text" id="user[username]" size="15" />
@@ -17,5 +17,5 @@
       </p>
     </form>
   </div>
-  <div class="roundbottom"><img src="<? echo ADMIN_BASE_URL ?>images/rc_bl.gif" alt="" width="6" height="6" class="corner botleft" style="display: none" /></div>
+  <div class="roundbottom"><img src="<?php echo ADMIN_BASE_URL ?>images/rc_bl.gif" alt="" width="6" height="6" class="corner botleft" style="display: none" /></div>
 </div>

@@ -1,4 +1,4 @@
-<form method="POST" action="<?=ADMIN_URL?>/users/updatepass/<?=$this->user->username?>">
+<form method="POST" action="<?php echo ADMIN_URL?>/users/updatepass/<?php echo $this->user->username?>">
 <!-- Begin User Form -->
         <div>
      <table class='edit_win' cellpadding='6' cellspacing='0'>
