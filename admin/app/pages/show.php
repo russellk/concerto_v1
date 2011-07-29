@@ -23,7 +23,7 @@
  * @license      GPLv2, see www.gnu.org/licenses/gpl-2.0.html
  * @version      $Revision$
  */
-?><?php echo $this->page['content']?>
+?><?=$this->page['content']?>
 <?php
 if($this->page['get_feedback']) {
    echo '<br style="clear:both">';

@@ -24,7 +24,7 @@
  * @version      $Revision$
  */
 ?><form method="POST" 
-action="<?php echo ADMIN_URL?>/feeds/update/<?php echo $this->feed->id?>">
+action="<?=ADMIN_URL?>/feeds/update/<?=$this->feed->id?>">
 <?php 
 	include("_form.php");
 ?>

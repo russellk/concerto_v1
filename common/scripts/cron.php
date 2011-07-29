@@ -1,4 +1,4 @@
-<?php
+<?
 /**
  * This file was developed as part of the Concerto digital signage project
  * at RPI.
@@ -6,7 +6,7 @@
  * Copyright (C) 2009 Rensselaer Polytechnic Institute
  * (Student Senate Web Technologies Group)
  *
- * This program is free software; you can redistribute it and/or modify it
+ * This program is free software; you can redistribute it and/or modify it 
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
  * any later version.
@@ -70,7 +70,7 @@ function nightly(){
 	//Rollover the feed-content table's statistics
 	echo "Rolling over statistics...\n";
 	$sql = "UPDATE `feed_content` SET `yesterday_count` = `display_count`";
-	sql_command($sql);
+	sql_command($sql);	
 
 	//Rolloever the position table's statistics
 	$sql = "UPDATE `position` SET `yesterday_count` = `display_count`";
@@ -88,7 +88,7 @@ function nightly(){
 	//Parse the cache!
         cache_parse(25);
 	echo "Completed cache parsing.\n";
-
+	
   echo "Finding expired content in moderation queue...";
   deny_expired();
   echo "Done dening expired content in mod queue.\n";
@@ -128,7 +128,7 @@ function always(){
 				echo "</code>";
 		  }
 		  echo "Status: " . $feed->dyn->status . "\n";
-
+		  
 		}
 	}
 	//Then generate the newsfeed!
