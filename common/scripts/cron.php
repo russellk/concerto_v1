@@ -6,7 +6,7 @@
  * Copyright (C) 2009 Rensselaer Polytechnic Institute
  * (Student Senate Web Technologies Group)
  *
- * This program is free software; you can redistribute it and/or modify it 
+ * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
  * any later version.
@@ -42,17 +42,21 @@ include(COMMON_DIR.'notification.php');//Class to represent notifications
 
 include(CONTENT_DIR.'render/render.php'); //Functions to generate the cache
 
-if(date("D Hi") == 'Sun 0010' || $_REQUEST['weekly']){
+if(date("D Hi") == 'Sun 0010' || (array_key_exists('weekly', $_REQUEST) && $_REQUEST['weekly']) ){
 	weekly();
 	print("Finished weekly job\n");
 }
-if(date("Hi") == '0010' || $_REQUEST['nightly']){
+if(date("Hi") == '0010' || (array_key_exists('nightly', $_REQUEST) && $_REQUEST['nightly']) ){
 	nightly();
 	print("Finished nightly job\n");
 }
-if(date("i") == '10' || $_REQUEST['hourly']){
+if(date("i") == '10' || (array_key_exists('hourly', $_REQUEST) && $_REQUEST['hourly']) ){
 	//In the event screen rotation isn't enabled in the config...
-	if(!is_array($screen_rotate)){
+	if( isset($screen_rotate) ){
+		if( !is_array($screen_rotate)){
+			$screen_rotate = false;
+		}
+	}else{
 		$screen_rotate = false;
 	}
 	hourly($screen_rotate);
@@ -70,7 +74,7 @@ function nightly(){
 	//Rollover the feed-content table's statistics
 	echo "Rolling over statistics...\n";
 	$sql = "UPDATE `feed_content` SET `yesterday_count` = `display_count`";
-	sql_command($sql);	
+	sql_command($sql);
 
 	//Rolloever the position table's statistics
 	$sql = "UPDATE `position` SET `yesterday_count` = `display_count`";
@@ -88,7 +92,7 @@ function nightly(){
 	//Parse the cache!
         cache_parse(25);
 	echo "Completed cache parsing.\n";
-	
+
   echo "Finding expired content in moderation queue...";
   deny_expired();
   echo "Done dening expired content in mod queue.\n";
@@ -128,7 +132,7 @@ function always(){
 				echo "</code>";
 		  }
 		  echo "Status: " . $feed->dyn->status . "\n";
-		  
+
 		}
 	}
 	//Then generate the newsfeed!
@@ -136,7 +140,7 @@ function always(){
 	$notif = new Notification();
 	$notif->process(20); //If more than 20 are generated the system might be under high load.
         echo "Done processing notifications. \n";
-        
+
         // Send email notifications if the screens are not online
         echo "Scanning for recently downed screens...\n";
         screen_offline_mail( );
@@ -171,7 +175,7 @@ function screen_offline_mail( ) {
 
             $mail_body .= "$name (at $location, last ip $last_ip mac $mac)\n";
         }
-       
+
        $admin->send_mail("Screen Outage Detected", $mail_body);
     }
 }
