@@ -44,12 +44,18 @@
 <script defer type="text/javascript" src="<?=ADMIN_BASE_URL?>js/pngfix.js"></script>
 <![endif]-->
 
-<script type="text/javascript" src="<?=ADMIN_BASE_URL?>js/jquery.js"></script>
-<script type="text/javascript" src="<?=ADMIN_BASE_URL?>js/ui.lightbox.js"></script>
-<script type="text/javascript" src="<?=ADMIN_BASE_URL?>js/ui.tablesort.js"></script>
-<script type="text/javascript" src="<?=ADMIN_BASE_URL?>js/ui.jquery.js"></script>
+<script type="text/javascript" src="<?php echo ADMIN_BASE_URL?>js/jquery.js"></script>
+<script type="text/javascript" src="<?php echo ADMIN_BASE_URL?>js/ui.lightbox.js"></script>
+<script type="text/javascript" src="<?php echo ADMIN_BASE_URL?>js/ui.tablesort.js"></script>
+<script type="text/javascript" src="<?php echo ADMIN_BASE_URL?>js/ui.jquery.js"></script>
 
-<meta name="generator" content="Concerto <?= CONCERTO_VERSION ?>">
+<!--[if IE]>
+<script type="text/javascript" src="<?=ADMIN_BASE_URL?>video/html5.js"></script>
+<script type="text/javascript" src="<?=ADMIN_BASE_URL?>video/flowplayer.min.js"></script>
+<script type="text/javascript" src="<?=ADMIN_BASE_URL?>video/html5-video.js"></script>
+<![endif]-->
+
+<meta name="generator" content="Concerto <?php echo CONCERTO_VERSION ?>">
 <meta name="application-name" content="Concerto"/>
 <meta name="description" content="RPI Digital Signage for Everyone."/>
 <meta name="application-url" content="http://<?=$_SERVER['SERVER_NAME'] . ADMIN_URL?>"/>
@@ -57,6 +63,10 @@
 <link rel="icon" href="<?=ADMIN_BASE_URL?>images/concerto_48x48.png" sizes="48x48"/>
 
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+<script type="text/javascript">
+  var FLOWPLAYER_URL = "<?=ADMIN_BASE_URL?>video/flowplayer-3.1.5.swf";
+</script>
 
 <?php //renderHeadExtras() ?>
 </head>
