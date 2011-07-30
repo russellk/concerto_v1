@@ -212,7 +212,11 @@ class frontpageController extends Controller
      $file['tmp_name'] = $_FILES['template']['tmp_name']['image'];
      $file['error'] = $_FILES['template']['error']['image'];
      $file['size'] = $_FILES['template']['size']['image'];
-     
+
+// KLR: insure that we use the default streams context (it may be set elsewhere)
+// This is a temporary fix until the simplexml_load_file() function is replaced
+// by a proxy aware function.
+     libxml_set_streams_context(stream_context_get_default());
      $xml = @simplexml_load_file($_FILES['template']['tmp_name']['descriptor']);
      if($xml == false){
        $this->flash("Descriptor parsing error, check XML syntax.",'error');

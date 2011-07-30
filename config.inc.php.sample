@@ -54,6 +54,13 @@ $auth['ldap']['msg'] = "You must use your LDAP account and password";
 //Database
 $auth['db']['msg'] = "You must use your Concerto password";
 
+//Proxy Configuration
+// Similar as specified by wget.
+$http_proxy = 'http://webproxy.example.com:8080';
+
+// Similar as specified by wget.  It would have been nice to use the usual
+// regular expression mapping, but this is somewhat standard.
+$no_proxy = 'localhost,.example.com';
 
 //Important paths
 

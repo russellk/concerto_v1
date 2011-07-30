@@ -124,6 +124,34 @@ class Dynamic{
   
   //Get the XML content and pass it off to the xml handler
   function xml_update(){
+
+    // *****************************************************************
+    // KLR: major modification to use the proxy when required.
+    // This is a temporary fix until simplexml_load_file() function is
+    // replaced by a proxy aware function.
+
+    global $http_proxy;
+    global $no_proxy;
+
+    // PHP uses TCP streams for the proxy
+    $tcp_proxy = preg_replace( '/^http/', 'tcp', $http_proxy );
+    $no_proxy_hosts = split( ",", $no_proxy );
+
+    // Is the host in the no_proxy list?
+    $host =  parse_url( $this->path, PHP_URL_HOST );
+    $cnt = 0;
+    foreach( $no_proxy_hosts as $no_proxy_host ){
+      $cnt = $cnt + preg_match( '/' . $no_proxy_host . '$/', $host );
+    }
+    if( $cnt > 0 ){
+      libxml_set_streams_context(stream_context_get_default());
+    }else{
+      $aContext = array( 'http' => array( 'proxy' => $tcp_proxy, 'request_fulluri' => True ) );
+      $r_default_context = stream_context_get_default( $aContext );
+      libxml_set_streams_context( $r_default_context );
+    }
+    // *****************************************************************
+
     if(($xml = simplexml_load_file($this->path)) && !is_bool($xml)){
       return $this->xml_handler($xml);
     } else {
