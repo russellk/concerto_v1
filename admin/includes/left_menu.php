@@ -37,15 +37,16 @@ src="<?php echo ADMIN_BASE_URL?>/images/conc_bluebg.gif" alt="Concerto" style=""
     <div class="menu_box">
     	<div class="menu_box_top"><img border="0" src="<?= ADMIN_BASE_URL ?>images/menubox_top.gif" alt="" /></div>
 	    <div class="menu_box_padding">
-        <? 
+        <?php
          if (!isLoggedIn()) { ?>
          <h2 style="font-size:1.6em;"><a href="<?= ADMIN_URL ?>/frontpage/login">Log In</a></h2>        
-         <hr />
-         <h2><a href="<?= ADMIN_URL ?>/users/signup">Signup</a></h2>
-
-	<? } else {
+         <?php global $auth; if ( strcmp( "db", $auth['type'] ) == 0 ) { ?>
+           <hr />
+           <h2><a href="<?= ADMIN_URL ?>/users/signup">Signup</a></h2>
+         <?php } ?>
+	<?php } else {
          ?>
-	   <?	 echo '<p>Welcome, <a href="'.ADMIN_URL.'/users/show/'.userName().'">'.firstName().'</a>!</p><br />';  ?>
+	   <?php echo '<p>Welcome, <a href="'.ADMIN_URL.'/users/show/'.userName().'">'.firstName().'</a>!</p><br />';  ?>
 	   	<a href="<?= ADMIN_URL ?>/users/show/<?= userName() ?>" title="View your profile and past submissions">
      <?  if ( isAdmin() ) { ?>
          <img border="0" src="<?=ADMIN_BASE_URL ?>images/user_1337.gif" alt="" />
