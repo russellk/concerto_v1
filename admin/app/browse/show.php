@@ -114,10 +114,10 @@ if(($this->feed->type == 4) && ($this->feed->dyn->needs_update() > 0)){
 
 <div style="float:left; width:70%;">
 	<ul id="maintab" class="ui-tabs-nav">
-		<li class="first<?php if(!isset($this->args[4])) { ?> ui-tabs-selected<?php } ?>"><a class="approved" href="<?= ADMIN_URL ?>/browse/show/<?= $this->feed->id ?>/type/<?= $this->type_id ?>"><h1>Active</h1></a></li>
-		<li class="<?php if($this->feed->user_priv($_SESSION['user'], "moderate")) { ?>middle<?php } else { ?>last<?php } ?><?php if($this->args[4] == "expired") { ?> ui-tabs-selected<?php } ?>"><a class="expired" href="<?= ADMIN_URL ?>/browse/show/<?= $this->feed->id ?>/type/<?= $this->type_id ?>/expired"><h1>Expired</h1></a></li>
+		<li class="first<?php if(!isset($this->args[4])) { ?> ui-tabs-selected<?php } ?>"><a class="approved" href="<?php echo ADMIN_URL ?>/browse/show/<?php echo $this->feed->id ?>/type/<?php echo $this->type_id ?>"><h1>Active</h1></a></li>
+		<li class="<?php if($this->feed->user_priv($_SESSION['user'], "moderate")) { ?>middle<?php } else { ?>last<?php } ?><?php if(isset($this->args[4])&&($this->args[4] == "expired")) { ?> ui-tabs-selected<?php } ?>"><a class="expired" href="<?php echo ADMIN_URL ?>/browse/show/<?php echo $this->feed->id ?>/type/<?php echo $this->type_id ?>/expired"><h1>Expired</h1></a></li>
 <?php if($this->feed->user_priv($_SESSION['user'], "moderate")) { ?>
-		<li class="last<?php if($this->args[4] == "declined") { ?> ui-tabs-selected<?php } ?>"><a class="denied" href="<?= ADMIN_URL ?>/browse/show/<?= $this->feed->id ?>/type/<?= $this->type_id ?>/declined"><h1>Declined</h1></a></li>
+		<li class="last<?php if(isset($this->args[4])&&($this->args[4] == "declined")) { ?> ui-tabs-selected<?php } ?>"><a class="denied" href="<?php echo ADMIN_URL ?>/browse/show/<?php echo $this->feed->id ?>/type/<?php echo $this->type_id ?>/declined"><h1>Declined</h1></a></li>
 <?php } ?>
 	</ul>
 

@@ -54,8 +54,8 @@ if($this->canEdit) {
    Default page: <select name="page">
    <option value=""></option>
 <?php
-   $pp = sql_select('page',Array('id','name'),"page_category_id LIKE $page[page_category_id]");
-      list($cat) = sql_select('page_category','default_page','id = '.$page[page_category_id]);
+   $pp = sql_select('page',Array('id','name'),"page_category_id LIKE ".$page['page_category_id']);
+      list($cat) = sql_select('page_category','default_page','id = '.$page['page_category_id']);
    $notfirst = 0; //Indicate that we haven't yet done the first row.  
    if(is_array($pp)) {
    foreach($pp as $lp) {

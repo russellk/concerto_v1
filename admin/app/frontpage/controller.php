@@ -287,7 +287,7 @@ class frontpageController extends Controller
 	}
   function authAction()
   {
-    if(login_login($_REQUEST[user][username], $_REQUEST[user][password])){
+    if(login_login($_REQUEST['user']['username'], $_REQUEST['user']['password'])){
       redirect_to(ADMIN_URL."/frontpage/dashboard");
     } else {
       $this->flash("Unable to authenticate with the username/password combination", 'error');

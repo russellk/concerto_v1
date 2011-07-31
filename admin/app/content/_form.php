@@ -110,7 +110,7 @@
          <td><h5>Duration</h5><p>For how long should this piece of content be displayed on a screen?</p></td>
          <td>
            <div class="duration_msg">Default is <?=DEFAULT_DURATION?> seconds</div>
-           <div class="duration_div" style="display:none"><input type="text" size="2" name="content[duration]" value="<?= $content->duration?$content->end_time:DEFAULT_DURATION?>" /> &nbsp;seconds</div>
+           <div class="duration_div" style="display:none"><input type="text" size="2" name="content[duration]" value="<?php echo isset($content->duration)?$content->duration:DEFAULT_DURATION?>" /> &nbsp;seconds</div>
          </td>
          <td width="30%" style="text-align:right;"><a class="click_duration" href="#">Set a different duration</a>
          </td>

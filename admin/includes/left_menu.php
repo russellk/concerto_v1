@@ -85,8 +85,7 @@ if(isLoggedIn()) {
          $more_waiting += $row['cnt'];
       }
    }
-}
-if(isset($mod_feeds) || ($more_waiting && isAdmin())) {
+   if(isset($mod_feeds) || ($more_waiting && isAdmin())) {
 ?>
     <div class="alert_box">
 	   <div class="alert_box_inset">
@@ -99,7 +98,8 @@ if(isset($mod_feeds) || ($more_waiting && isAdmin())) {
         </div>
       </div>
     </div>
-<?
+<?php
+   }
 }
 ?>
   </div>
