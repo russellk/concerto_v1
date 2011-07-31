@@ -204,7 +204,7 @@ class contentController extends Controller
          }
          $uploader = new Uploader($dat['name'], $start,
                                   $end, $feed_ids, $dat['duration']*1000, 
-                                  $content_val, $dat['upload_type'], $_SESSION[user]->id, 1);
+                                  $content_val, $dat['upload_type'], $_SESSION['user']->id, 1);
       }
       if($uploader->retval) {
           if($dat['upload_type'] == 'dynamic') {

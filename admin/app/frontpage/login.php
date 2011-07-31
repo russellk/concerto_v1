@@ -3,6 +3,7 @@
   <div class="roundcont_main">
     <form id="login" name="login" method="post" action="<?php echo ADMIN_URL ?>/frontpage/auth">
       <p>
+        <?php global $auth; echo $auth[$auth['type']]['msg'] . "\n<br />\n"; ?>
         <label>Username
           <input name="user[username]" type="text" id="user[username]" size="15" />
         </label>

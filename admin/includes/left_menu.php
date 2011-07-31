@@ -34,25 +34,26 @@
 		<div class="logo_box_bot"><img border="0" src="<?php echo ADMIN_BASE_URL ?>images/logobox_bottom.gif" alt="" /></div>
 	 	</div>
     <div class="menu_box">
-	<div class="menu_box_top"><img border="0" src="<?php echo ADMIN_BASE_URL ?>images/menubox_top.gif" alt="" /></div>
-            <div class="menu_box_padding">
+    	<div class="menu_box_top"><img border="0" src="<?php echo ADMIN_BASE_URL ?>images/menubox_top.gif" alt="" /></div>
+	    <div class="menu_box_padding">
         <?php
          if (!isLoggedIn()) { ?>
-         <h2 style="font-size:1.6em;"><a href="<?php echo ADMIN_URL ?>/frontpage/login">Log In</a></h2>
-         <hr />
-         <h2><a href="<?php echo ADMIN_URL ?>/users/signup">Signup</a></h2>
-
+         <h2 style="font-size:1.6em;"><a href="<?php echo ADMIN_URL ?>/frontpage/login">Log In</a></h2>        
+         <?php global $auth; if ( strcmp( "db", $auth['type'] ) == 0 ) { ?>
+           <hr />
+           <h2><a href="<?php echo ADMIN_URL ?>/users/signup">Signup</a></h2>
+         <?php } ?>
 	<?php } else {
          ?>
-	   <?php	 echo '<p>Welcome, <a href="'.ADMIN_URL.'/users/show/'.userName().'">'.firstName().'</a>!</p><br />';  ?>
-		<a href="<?php echo ADMIN_URL ?>/users/show/<?php echo userName() ?>" title="View your profile and past submissions">
+	   <?php echo '<p>Welcome, <a href="'.ADMIN_URL.'/users/show/'.userName().'">'.firstName().'</a>!</p><br />';  ?>
+	   	<a href="<?php echo ADMIN_URL ?>/users/show/<?php echo userName() ?>" title="View your profile and past submissions">
      <?php  if ( isAdmin() ) { ?>
          <img border="0" src="<?php echo ADMIN_BASE_URL ?>images/user_1337.gif" alt="" />
            <?php } elseif ($_SESSION[user]->controls_afeed() || $_SESSION[user]->controls_ascreen()) { ?>
          <img border="0" src="<?php echo ADMIN_BASE_URL ?>images/user_admin.gif" alt="" />
            <?php } else { ?>
-         <img border="0" src="<?php echo ADMIN_BASE_URL ?>images/user_basic.gif" alt="" />
-           <?php } //This closes the non admin or moderator stuff
+         <img border="0" src="<?php echo ADMIN_BASE_URL ?>images/user_basic.gif" alt="" /> 
+           <?php } //This closes the non admin or moderator stuff 
            ?>
            
            <h4>View Account</h4></a>

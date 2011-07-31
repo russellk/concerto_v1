@@ -186,6 +186,8 @@ class Uploader{
 					$this->ppt_cleaner();
 				} elseif ($pre_type == "application/pdf"){
 					$this->pdf_cleaner(); 
+                                } elseif (strpos($pre_type, 'video/') !== false) {
+                                        $this->video_cleaner($pre_type);
 				} else {
 					unlink($this->content_i['tmp_name']); //Delete it since its def a virus duh!
 					$this->status = $this->status ."We could not recognize the type of file you submitted. ";
@@ -489,6 +491,48 @@ class Uploader{
                         return false;
 		}
 	} 
+        function video_cleaner($mime_type){
+                $temp_dir = $this->get_temp_dir();
+                $temp_name = $this->user_id . "-" . $this->content_i['name'];
+                $temp_dest = $temp_dir . $temp_name;
+                if(move_uploaded_file($this->content_i['tmp_name'], $temp_dest)){
+                        $this->content_o = 'Processing...';
+                        $this->mime_type = 'text/html';
+                        $this->type_id = 3; //SELF: THIS IS BAD AND DUMB AND STUPID
+                        $content = new Content();
+                        if($content->create_content($this->name, $this->user_id, $this->content_o, $this->mime_type, $this->type_id, $this->start_date, $this->end_date)){
+                                $this->cid = $content->id;
+
+                                $html = '<video width="100%" autoplay="autoplay">';
+                                $html = $html . '  <source src="' . VIDEO_URL . $this->cid . '.ogv" type="video/ogg" />';
+                                $html = $html . '  <source src="' . VIDEO_URL . $this->cid . '.mp4" type="video/mp4" />';
+                                $html = $html . '</video>';
+
+                                copy(ROOT_DIR . 'admin/video/placeholder.mp4', VIDEO_DIR . $this->cid . '.mp4');
+                                copy(ROOT_DIR . 'admin/video/placeholder.ogv', VIDEO_DIR . $this->cid . '.ogv');
+
+                                $content->content = $html;
+                                $content->set_properties();
+
+                                $this->submit_tofeeds(false);
+
+                                $command = COMMON_DIR . "scripts/convert_video.py " . $temp_dest . " " . VIDEO_DIR . " " . $this->cid;
+                                exec($command . ' > /dev/null &');
+
+                                $this->status = "";
+                                $this->retval = true;
+                                return true; //The content is finished uploading
+                        } else {
+                                $this->retval = false;
+                                $this->status = $this->status . $content->status;
+                                return false; //Failure making a content isn't a good thing
+                        }
+                } else {
+                        $this->status = $this->status . "Video permission overflow.  Please contact an administrator. ";
+                        $this->retval = false;
+                        return false;
+                }
+        }
 	function mover($current_loc){
 		$this->content_o = $current_loc;
 		$ext = substr(strrchr($current_loc, "."), 1);
@@ -512,11 +556,11 @@ class Uploader{
 			return false; //Failure making a content isn't a good thing
 		}
 	}
-	function submit_tofeeds(){ //Submits the content to feeds, addressed the auto-approve issue for moderators
+        function submit_tofeeds($autoapprove = false){ //Submits the content to feeds, addressed the auto-approve issue for moderators
 		foreach($this->feeds as $fid){
 			$f = new Feed($fid);
 			$u = new User($this->user_id);
-			if($u->in_group($f->group_id)){
+                        if($u->in_group($f->group_id) && $autoapprove){
 				$f->content_add($this->cid, 1, $u->id, $this->duration);
 			} else {
 				$f->content_add($this->cid, 'NULL', 'NULL', $this->duration);

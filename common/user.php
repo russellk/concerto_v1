@@ -44,6 +44,9 @@ Comments:
 	can_write is my basic implementation of 'privledges', essentially it combines owner + group to test if the user is an owner who can write
 	Fast patch, users cannot leave information blank when creating accounts  
 */
+
+require_once 'Net/LDAP2/Filter.php';
+
 class User{
 	var $id;
 	var $username;
@@ -380,31 +383,130 @@ allow_email = '$this->allow_email' WHERE id = $this->id LIMIT 1";
 		}
   }
   function auth_test($username_in, $password){
-    $password = md5($password);
-    $username = escape($username_in);
-    $sql = "SELECT COUNT(id) as id_count FROM user WHERE username = '$username' AND password = '$password'";
-                                
-    $res = sql_query($sql);
-    if(($res && $data = sql_row_keyed($res,0)) && $data['id_count'] == 1){
-      return true;
-    } else {
+
+    global $auth;
+
+// We do not allow blank passwords
+    if( strlen($password) < 1 )
       return false;
+
+    if( strcmp( "db", $auth['type'] ) == 0 ){
+      $password = md5($password);
+      $username = escape($username_in);
+      $sql = "SELECT COUNT(id) as id_count FROM user WHERE username = '$username' AND password = '$password'";
+      $res = sql_query($sql);
+      if(($res && $data = sql_row_keyed($res,0)) && $data['id_count'] == 1){
+        return true;
+      } else {
+        return false;
+      }
+
+    }else if( strcmp( "ldap", $auth['type'] ) == 0 ){
+/**
+ * NOTE: Some of this code has been lifted from the LdapAuthentication
+ * extension to MediaWiki.  It was a good example.  That code released
+ * under the GPL v2 or later license (same as this code).
+ *
+ * We must protect against LDAP injection attacks and properly escape the
+ * user entered information.  Requires the Pear php-net-ldap2 package.
+ */
+      $ldapSearchFilter = Net_LDAP2_Filter::create( $auth['ldap']['UserAttr'], 'equals', $username_in )->asString();
+
+      if( !($ldapLinkId = ldap_connect( $auth['ldap']['URI'] )) )
+        return false;
+
+      ldap_set_option( $ldapLinkId, LDAP_OPT_PROTOCOL_VERSION, 3 );
+      ldap_set_option( $ldapLinkId, LDAP_OPT_REFERRALS, 0 );
+
+// Some servers do not allow anonymous binds and we cannot bind without
+// knowing the DN of the user.
+      if( !ldap_bind( $ldapLinkId, $auth['ldap']['ProxyBindDN'], $auth['ldap']['ProxyBindPW'] ) )
+        return false;
+
+// Find the entries that match the username
+      if( !($ldapInfo = @ldap_search( $ldapLinkId, $auth['ldap']['SearchBase'], $ldapSearchFilter ) ) )
+        return false;
+
+// Only use the first entry returned by the LDAP server to extract the DN
+      if( !($ldapResource = ldap_first_entry( $ldapLinkId, $ldapInfo )) )
+        return false;
+      $ldapUserDN = ldap_get_dn( $ldapLinkId, $ldapResource );
+
+// Authenticate the user's DN against the LDAP server using the password
+      if( ldap_bind( $ldapLinkId, $ldapUserDN, $password )){
+
+// Only extract the first username,sn,givenName stored on the LDAP server
+        if( !($ldapUsernames = @ldap_get_values( $ldapLinkId, $ldapResource, $auth['ldap']['UserAttr'] )) )
+          return false;
+        $ldapUsername = $ldapUsernames[0];
+
+        if( !($ldapSNs = @ldap_get_values( $ldapLinkId, $ldapResource, 'sn' )) )
+          return false;
+        $ldapSN = $ldapSNs[0];
+
+        if( !($ldapGivenNames = @ldap_get_values( $ldapLinkId, $ldapResource, 'givenName' )) )
+          return false;
+        $ldapGivenName = $ldapGivenNames[0];
+
+// Look into the SQL database for the user
+        $sql = "SELECT id,COUNT(id) as id_count FROM user WHERE username = '$ldapUsername'";
+        $res = sql_query($sql);
+        if(($res && $data = sql_row_keyed($res,0)) && $data['id_count'] == 1){
+// Update the entry in the database as the user exists
+          $sqlID = $data['id'];
+          $username = escape($ldapUsername);
+          $name = escape($ldapGivenName . " " . $ldapSN);
+          $email = escape("");
+          $sql = "UPDATE user SET username = '$username', password = '', name = '$name', email = '$email' WHERE id = $sqlID LIMIT 1";
+          $res = sql_query($sql);
+          if($res)
+            return true;
+          else
+            return false;
+        }else{
+// Create an entry in the database
+          $username = escape($ldapUsername);
+          $name = escape($ldapGivenName . " " . $ldapSN);
+          $email = escape("");
+          $sql = "INSERT INTO user (username, password, name, email, admin_privileges, allow_email) VALUES ('$username', '', '$name', '$email', '0', '0')";
+          $res = sql_query($sql);
+          if($res)
+            return true;
+          else
+            return false;
+        }
+      }
+    }else{
     }
+
+    return false;
   }
   function change_password($curpass_in, $newpass_in){
     if(!$this->set){
       return false;
     }
-    $password = md5($curpass_in);
-    $sql = "SELECT COUNT(id) as id_count FROM user WHERE id = $this->id AND password = '$password'";
-    $res = sql_query($sql);
-    if(($res && $data = sql_row_keyed($res,0)) && $data['id_count'] == 1){
-      //We're ok to update the password
-      $password = md5($newpass_in);
-      $sql = "UPDATE user SET password = '$password' WHERE id = $this->id LIMIT 1";
-      sql_query($sql);
-      return true;
-    } else {
+    if( strcmp( "db", $auth['type'] ) ){
+      $password = md5($curpass_in);
+      $sql = "SELECT COUNT(id) as id_count FROM user WHERE id = $this->id AND password = '$password'";
+      $res = sql_query($sql);
+      if(($res && $data = sql_row_keyed($res,0)) && $data['id_count'] == 1){
+        //We're ok to update the password
+        $password = md5($newpass_in);
+        $sql = "UPDATE user SET password = '$password' WHERE id = $this->id LIMIT 1";
+        sql_query($sql);
+        return true;
+      } else {
+        return false;
+      }
+
+    }else if( strcmp( "ldap", $auth['type'] ) ){
+/**
+ * TODO: A password change in the SQL database will not have any effect.  If we are going to change
+ * it, we must change it on the LDAP server.
+ */
+      return false;
+
+    }else{
       return false;
     }
   }

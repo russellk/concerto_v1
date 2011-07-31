@@ -42,17 +42,21 @@ include(COMMON_DIR.'notification.php');//Class to represent notifications
 
 include(CONTENT_DIR.'render/render.php'); //Functions to generate the cache
 
-if(date("D Hi") == 'Sun 0010' || $_REQUEST['weekly']){
+if(date("D Hi") == 'Sun 0010' || (array_key_exists('weekly', $_REQUEST) && $_REQUEST['weekly']) ){
 	weekly();
 	print("Finished weekly job\n");
 }
-if(date("Hi") == '0010' || $_REQUEST['nightly']){
+if(date("Hi") == '0010' || (array_key_exists('nightly', $_REQUEST) && $_REQUEST['nightly']) ){
 	nightly();
 	print("Finished nightly job\n");
 }
-if(date("i") == '10' || $_REQUEST['hourly']){
+if(date("i") == '10' || (array_key_exists('hourly', $_REQUEST) && $_REQUEST['hourly']) ){
 	//In the event screen rotation isn't enabled in the config...
-	if(!is_array($screen_rotate)){
+	if( isset($screen_rotate) ){
+		if( !is_array($screen_rotate)){
+			$screen_rotate = false;
+		}
+	}else{
 		$screen_rotate = false;
 	}
 	hourly($screen_rotate);
@@ -136,7 +140,7 @@ function always(){
 	$notif = new Notification();
 	$notif->process(20); //If more than 20 are generated the system might be under high load.
         echo "Done processing notifications. \n";
-        
+
         // Send email notifications if the screens are not online
         echo "Scanning for recently downed screens...\n";
         screen_offline_mail( );
@@ -171,7 +175,7 @@ function screen_offline_mail( ) {
 
             $mail_body .= "$name (at $location, last ip $last_ip mac $mac)\n";
         }
-       
+
        $admin->send_mail("Screen Outage Detected", $mail_body);
     }
 }

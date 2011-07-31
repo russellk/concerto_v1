@@ -32,9 +32,35 @@
 
 //Database Connection
 $db_host = 'localhost';
-$db_login = 'user';
-$db_password = 'password';
+$db_login = 'concerto';
+$db_password = 'concerto';
 $db_database = 'concerto';
+
+
+/*************************
+ * Authentication settings
+ *************************/
+$auth['type'] = "ldap"; // How to validate the user/password.
+                        // One of "db" or "ldap".
+
+//LDAP Connection
+$auth['ldap']['URI'] = "ldap://localhost/";
+$auth['ldap']['ProxyBindDN'] = "cn=proxyuser,dc=example,dc=com";
+$auth['ldap']['ProxyBindPW'] = "password";
+$auth['ldap']['SearchBase'] = "ou=People,dc=example,dc=com";
+$auth['ldap']['UserAttr'] = "uid";
+$auth['ldap']['msg'] = "You must use your LDAP account and password";
+
+//Database
+$auth['db']['msg'] = "You must use your Concerto password";
+
+//Proxy Configuration
+// Similar as specified by wget.
+$http_proxy = 'http://webproxy.example.com:8080';
+
+// Similar as specified by wget.  It would have been nice to use the usual
+// regular expression mapping, but this is somewhat standard.
+$no_proxy = 'localhost,.example.com';
 
 //Important paths
 

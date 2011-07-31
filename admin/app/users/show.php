@@ -68,7 +68,9 @@ $(function()
 <?php if($this->canEdit) {?>
 <h3>Contact: <span class="emph"><a href="mailto:<?php echo $this->user->email?>"><?php echo $this->user->email?></a></h3>
 <?php if($this->user->username == $_SESSION['user']->username) {?>
+<?php global $auth; if ( strcmp( "db", $auth['type'] ) == 0 ) { ?>
 <h3><a href="<?php echo ADMIN_URL . "/users/password/" . $this->user->username?>">Change Password</a></h3>
+<?php } ?>
 <?php } ?>
 <br />
 <div class="roundcont newsfeed">

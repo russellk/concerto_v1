@@ -193,18 +193,23 @@ class Notification{
 		}
 		
 		$this->lost_items = false;
-		if($temp_text = $text[$this->type][$this->by][$this->msg]){
+		if( array_key_exists($this->type,$text)
+		 && array_key_exists($this->by,$text[$this->type])
+		 && array_key_exists($this->msg,$text[$this->type][$this->by])
+		 && $temp_text = $text[$this->type][$this->by][$this->msg]){
 			if($this->type_obj != '' && $this->type_obj->set && strlen($this->type_obj->name) > 0){
 				$temp_text = str_replace('%1_name', $this->type_obj->name, $temp_text);
 				$temp_text = str_replace('%1_id', $this->type_obj->id, $temp_text);
-				$temp_text = str_replace('%1_un', $this->type_obj->username, $temp_text);
+				if( isset($this->type_obj->username) )
+					$temp_text = str_replace('%1_un', $this->type_obj->username, $temp_text);
 			} else {
 				$this->lost_items = true;
 			}
 			if($this->by_obj != '' && $this->by_obj->set && strlen($this->by_obj->name) > 0){
 				$temp_text = str_replace('%2_name', $this->by_obj->name, $temp_text);
 				$temp_text = str_replace('%2_id', $this->by_obj->id, $temp_text);
-				$temp_text = str_replace('%2_un', $this->by_obj->username, $temp_text);
+				if( isset($this->type_obj->username) )
+					$temp_text = str_replace('%2_un', $this->by_obj->username, $temp_text);
 			} else {
 				$this->lost_items = true;
 			}
