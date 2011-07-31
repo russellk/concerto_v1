@@ -65,7 +65,7 @@
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 
 <script type="text/javascript">
-  var FLOWPLAYER_URL = "<?=ADMIN_BASE_URL?>video/flowplayer-3.1.5.swf";
+  var FLOWPLAYER_URL = "<?php echo ADMIN_BASE_URL?>video/flowplayer-3.1.5.swf";
 </script>
 
 <?php //renderHeadExtras() ?>
